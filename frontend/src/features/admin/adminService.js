@@ -59,7 +59,7 @@ const deleteUser = async (userId, token) => {
 
 
 // Block/ unblock user
-const blockUser = async (userId, token) => {
+const toggleUserStatus = async (userId, token) => {
 	const config = {
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -74,9 +74,9 @@ const blockUser = async (userId, token) => {
 const adminService = {
 	createUser,
 	getAllUsers,
-    editUser,
+	editUser,
 	deleteUser,
-	blockUser,
+	toggleUserStatus,
 };
 
 export default adminService;

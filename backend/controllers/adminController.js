@@ -15,37 +15,29 @@ const getAllUsers = asyncHandler(async (req, res) => {
 	}
 });
 
-
-const loginUser = asyncHandler(async (req, res) => {
-	const { email, password } = req.body;
-
-	//Check for user email
-	const user = await User.findOne({ email });
-
-	if (user && (await bcrypt.compare(password, user.password))) {
-		res.status(200).json({
-			_id: user.id,
-			name: user.name,
-			email: user.email,
-			token: generateToken(user._id),
-		});
-	} else {
+const deleteUser = asyncHandler(async (req, res) => {
+	const user = await User.findById(req.params.id);
+	if (!user) {
 		res.status(400);
-		throw new Error("Invalid Credential");
+		throw new Error("User not found");
 	}
-	res.json({ message: "Login user" });
+	await user.remove();
+	res.status(200).json({ id: req.params.id });
 });
 
-// @desc    Get user data
-// @route   GET /api/users/me
-// @access  Private
-
-const getMe = asyncHandler(async (req, res) => {
-	res.status(200).json(req.user);
+const toggleUserStatus = asyncHandler(async (req, res) => {
+	console.log(req.params.id);
+	const user = await User.findById(req.params.id);
+	if (!user) {
+		res.status(400);
+		throw new Error("User not found");
+	}
+	User.findOneAndUpdate({ _id: req.params.id }, [{ $set: { status: { $eq: [false, "$status"] } } }]);
+	res.status(200).json({ id: req.params.id });
 });
 
 module.exports = {
 	getAllUsers,
-	loginUser,
-	getMe,
+	deleteUser,
+	toggleUserStatus,
 };

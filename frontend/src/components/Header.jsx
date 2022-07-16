@@ -5,38 +5,30 @@ import { logout, reset } from "../features/auth/authSlice";
 
 function Header() {
 	const navigate = useNavigate();
-	const dispatch=useDispatch()
-	const {user}=useSelector((state)=>state.auth)
-	const onLogout=()=>{
-		dispatch(logout())
-		dispatch(reset())
-		navigate('/')
-	}
+	const dispatch = useDispatch();
+	const { user } = useSelector((state) => state.auth);
+	const onLogout = () => {
+		dispatch(logout());
+		dispatch(reset());
+		navigate("/");
+	};
 	return (
 		<header className="header">
 			<div className="logo">
 				<Link to="/">GoalSetter</Link>
 			</div>
-			<section className="search">
-				<form>
-					<div className="form-group-search">
-						<input
-							type="text"
-							className="form-control"
-							id="search"
-							name="search"
-							// value={search}
-							placeholder="Search Here"
-							// onChange={onChange}
-						/>
-						<button type="submit" className="btn">
-							<span>
-								<FaSearch />
-							</span>
-							Search
-						</button>
-					</div>
-				</form>
+			<section className="form">
+				<div className="form-group">
+					<input
+						type="text"
+						className="form-control "
+						id="search"
+						name="search"
+						// value={search}
+						placeholder="Search Here"
+						// onChange={onChange}
+					/>
+				</div>
 			</section>
 			<ul>
 				{user ? (

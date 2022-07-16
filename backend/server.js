@@ -6,6 +6,8 @@ const connectDB = require("./config/db");
 const colors = require("colors");
 const port = process.env.PORT || 5000;
 
+const morgan = require("morgan");
+app.use(morgan("dev"));
 connectDB();  
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

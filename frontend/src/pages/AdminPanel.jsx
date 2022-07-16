@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,32 +10,28 @@ import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getAllUsers,reset} from "../features/admin/adminSlice";
+import { getAllUsers, deleteUser, reset, toggleUserStatus } from "../features/admin/adminSlice";
 import Spinner from "../components/Spinner";
-
-// import { getAllUsers} from "../features/admin/adminSlice";
 
 function AdminPanel() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	// const {users} = useSelector((state) => state.users);
-	// const users = [];
 	const { user } = useSelector((state) => state.auth);
 	const { users, isLoading, isError, message } = useSelector((state) => state.users);
 	console.log(users);
 
 	useEffect(() => {
-    console.log('admin panel use effect');
-    // dispatch(getAllUsers());
+		console.log("admin panel use effect");
 		if (isError) {
 			console.log(message);
 			toast.error(message);
 		}
 
-		if (user.role==="admin") {
-      dispatch(getAllUsers());
+		if (user.role === "admin") {
+			dispatch(getAllUsers());
 		}
+
 		return () => {
 			dispatch(reset());
 		};
@@ -45,6 +40,8 @@ function AdminPanel() {
 	if (isLoading) {
 		return <Spinner />;
 	}
+
+	
 
 	return (
 		<div>
@@ -63,14 +60,14 @@ function AdminPanel() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{users.map((user) => (
-							<TableRow key={user.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-								<TableCell align="right">{user._id}</TableCell>
-								<TableCell component="th" scope="user">
-									{user.name}
+						{users.map((userData) => (
+							<TableRow key={userData.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+								<TableCell align="right">{userData._id}</TableCell>
+								<TableCell component="th" scope="userData">
+									{userData.name}
 								</TableCell>
-								<TableCell align="right">{user.email}</TableCell>
-								<TableCell align="right">{user.role}</TableCell>
+								<TableCell align="right">{userData.email}</TableCell>
+								<TableCell align="right">{userData.role}</TableCell>
 
 								<TableCell align="right">
 									<Button variant="contained" color="success">
@@ -78,14 +75,22 @@ function AdminPanel() {
 									</Button>
 								</TableCell>
 								<TableCell align="right">
-									<Button variant="contained" color="error">
+									<Button
+										variant="contained"
+										color="error"
+										onClick={() => dispatch(deleteUser(userData._id))}
+									>
 										Delete
 									</Button>
 								</TableCell>
 								<TableCell align="right">
-								{
-                  user.status?():()
-                }
+									<Button
+										onClick={() => dispatch(toggleUserStatus(userData._id))}
+										variant="contained"
+										color={userData.status ? "error" : "success"}
+									>
+										{userData.status ? "Unblock" : "Block"}
+									</Button>
 								</TableCell>
 							</TableRow>
 						))}
